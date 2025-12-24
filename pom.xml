@@ -84,12 +84,17 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.8</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!--7 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
         <!--8 -->
@@ -121,7 +126,6 @@
             <artifactId>spring-dotenv</artifactId>
             <version>4.0.0</version>
         </dependency>
-
     </dependencies>
 
     <build>

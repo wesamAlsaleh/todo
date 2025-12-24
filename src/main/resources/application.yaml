@@ -1,4 +1,10 @@
 spring:
   application:
     name: todo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todo
+    username: postgres
+    password: wesamwesamwesam
+  jpa:
+    show-sql: true
 
