@@ -5,3 +5,7 @@ spring:
     password: wesamwesamwesam
   jpa:
     show-sql: true
+  jwt:
+    secret-key: ${JWT_SECRET}
+    access-token-validity-seconds: 900 #  7 days in seconds TODO: change to 900 `15 mins in seconds` for production
+    refresh-token-validity-seconds: 604800 # 604800 is 7 days in seconds
