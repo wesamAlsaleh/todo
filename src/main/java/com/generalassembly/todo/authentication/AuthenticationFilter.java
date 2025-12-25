@@ -63,7 +63,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         // build an authentication token object with the user id (the token object is used by Spring Security to represent the authenticated user)
         var authenticationTokenObject = new UsernamePasswordAuthenticationToken(
-                userId, // user id
+                userId, // user id as principal
                 null, // no credentials because we are using JWT token for authentication (not username and password)
                 Collections.emptyList() // no roles in the project
         );

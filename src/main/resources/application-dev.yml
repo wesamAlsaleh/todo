@@ -3,6 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/todo
     username: postgres
     password: wesamwesamwesam
+  config:
+    import: optional:file:.env[.properties] # This tells Spring to load the .env file
   jpa:
     show-sql: true
   jwt:
