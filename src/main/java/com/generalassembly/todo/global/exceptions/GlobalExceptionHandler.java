@@ -62,8 +62,8 @@ public class GlobalExceptionHandler {
     }
 
     // Method to handle duplication errors
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorDto> handleDuplicateResourceException(DuplicateResourceException exception) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDto> handleDuplicateResourceException(DataIntegrityViolationException exception) {
         // Return conflict request error if trying to create a record duplicated resource
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto(exception.getMessage()));
     }

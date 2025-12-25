@@ -1,8 +1,8 @@
 package com.generalassembly.todo.authentication.services;
 
+import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,12 +22,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     // This method should return the user details by email
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // get the user by email or todo: throw exception if not found
+        // get the user by email or throw exception if not found
         var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with email %s not found", email)));
 
-        // if the user found return the user object using spring security User Class!
-        return new User(
+        // if the user found return the userDetails object using spring security User Class!
+        return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), // user email
                 user.getPassword(), // user hashed password
                 Collections.emptyList() // no authorities

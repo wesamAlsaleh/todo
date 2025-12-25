@@ -53,6 +53,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // bean to use the DaoAuthenticationProvider as the project provider
     @Bean
     public AuthenticationProvider authenticationProvider() {
         // create a new instance of DaoAuthenticationProvider

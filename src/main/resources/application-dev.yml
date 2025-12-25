@@ -4,10 +4,10 @@ spring:
     username: postgres
     password: wesamwesamwesam
   config:
-    import: optional:file:.env[.properties] # This tells Spring to load the .env file
+    import: optional:file:.env[.properties] # This tells Spring to load the .env file and [.properties] to tell Spring to parse the file using the standard Key=Value property format
   jpa:
     show-sql: true
   jwt:
     secret-key: ${JWT_SECRET}
-    access-token-validity-seconds: 900 #  7 days in seconds TODO: change to 900 `15 mins in seconds` for production
+    access-token-validity-seconds: 900 #  7 days in seconds
     refresh-token-validity-seconds: 604800 # 604800 is 7 days in seconds
