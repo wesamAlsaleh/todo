@@ -2,8 +2,10 @@ package com.generalassembly.todo.authentication;
 
 import com.generalassembly.todo.authentication.dtos.RegisterUserRequest;
 import com.generalassembly.todo.authentication.services.AuthenticationService;
+import com.generalassembly.todo.global.dtos.ErrorDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,9 +41,15 @@ public class AuthenticationController {
 
             // return the response with status 201 and the uri (location of the created entity)
             return ResponseEntity.created(uri).body(userDto);
-        } catch (RuntimeException e) {
-            System.out.println("Error: " + e.getMessage());
-            return ResponseEntity.badRequest().build();
+        } catch (DataIntegrityViolationException e) {
+            System.out.println(e);
+            // if the error contain 23505 then return conflict response
+            if (e.getMostSpecificCause().getMessage().contains("violates unique")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("User already exists"));
+            }
+
+            // return general error
+            return ResponseEntity.badRequest().body(new ErrorDto("Error creating user"));
         }
     }
 }

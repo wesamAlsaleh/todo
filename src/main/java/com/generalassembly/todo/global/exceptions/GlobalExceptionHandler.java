@@ -1,22 +1,25 @@
 package com.generalassembly.todo.global.exceptions;
 
 import com.generalassembly.todo.global.dtos.ErrorDto;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice // Annotation to handle exceptions globally across all controllers
+//@ControllerAdvice // Annotation to handle exceptions globally across all controllers
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     // Method to handle Jakarta validation violations
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationViolation(
             MethodArgumentNotValidException exception
     ) {
@@ -34,7 +37,7 @@ public class GlobalExceptionHandler {
     }
 
     // Method to handle unique key violations "Better to use  `handleDuplicateResourceException`"
-    @org.springframework.web.bind.annotation.ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ErrorDto> handleSQLIntegrityViolation(
             SQLIntegrityConstraintViolationException exception
     ) {
@@ -43,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     // Method to handle max upload size violation
-    @org.springframework.web.bind.annotation.ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorDto> handleMaxUploadSizeExceededViolation(
             MaxUploadSizeExceededException exception
     ) {
@@ -52,28 +55,28 @@ public class GlobalExceptionHandler {
     }
 
     // Method to handle Resource not found violation
-    @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorDto> handleResourceNotFoundException(ResourceNotFoundException exception) {
         // Return bad request error if trying to access a missing resource
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
     }
 
     // Method to handle duplication errors
-    @org.springframework.web.bind.annotation.ExceptionHandler(DuplicateResourceException.class)
+    @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorDto> handleDuplicateResourceException(DuplicateResourceException exception) {
-        // Return bad request error if trying to create a record duplicated resource
-        return ResponseEntity.badRequest().body(new ErrorDto(exception.getMessage()));
+        // Return conflict request error if trying to create a record duplicated resource
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto(exception.getMessage()));
     }
 
     // Method to handle bad request violation
-    @org.springframework.web.bind.annotation.ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorDto> handleBadRequestException(BadRequestException exception) {
         // Return bad request error if the trying to create a record with bad inputs
         return ResponseEntity.badRequest().body(new ErrorDto(exception.getMessage()));
     }
 
     // Method to handle internal server errors
-    @org.springframework.web.bind.annotation.ExceptionHandler(InternalServerErrorException.class)
+    @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<ErrorDto> handleInternalServerErrorException(InternalServerErrorException exception) {
         // Return internal server error 500 if any service failed
         return ResponseEntity.internalServerError().body(new ErrorDto(exception.getMessage()));
@@ -85,6 +88,15 @@ public class GlobalExceptionHandler {
         // Return bad request error if the body is unreadable
         return ResponseEntity.badRequest().body(new ErrorDto("Unreadable Message, Please make a valid request body"));
     }
+
+    // Method to handle duplicate key value violates "23505 postgres"
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<ErrorDto> handleDuplicateKeyValueViolation(DataIntegrityViolationException exception) {
+//        // get the exception cause
+//        Throwable cause = exception.getCause();
+//
+//
+//    }
 
 
 }

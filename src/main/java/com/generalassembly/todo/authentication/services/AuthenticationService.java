@@ -3,6 +3,7 @@ package com.generalassembly.todo.authentication.services;
 import com.generalassembly.todo.authentication.dtos.RegisterUserRequest;
 import com.generalassembly.todo.configs.JwtConfig;
 import com.generalassembly.todo.global.exceptions.DuplicateResourceException;
+import com.generalassembly.todo.global.exceptions.InternalServerErrorException;
 import com.generalassembly.todo.users.User;
 import com.generalassembly.todo.users.UserRepository;
 import jakarta.servlet.http.Cookie;
@@ -43,12 +44,6 @@ public class AuthenticationService {
 
     // function to register new user
     public User register(RegisterUserRequest request) {
-        // check if the email is already in the database
-//        if (userRepository.emailExists(request.getEmail())) {
-////            throw new DuplicateResourceException("Email already exists");
-//            System.out.println("Duplicate email exists: " + request.getEmail());
-//        }
-
         // create new entity
         var user = new User();
 
