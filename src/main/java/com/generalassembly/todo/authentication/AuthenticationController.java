@@ -13,8 +13,12 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.naming.AuthenticationException;
 
 @RestController
 @AllArgsConstructor
@@ -44,6 +48,8 @@ public class AuthenticationController {
             // return the response with status 201 and the uri (location of the created entity)
             return ResponseEntity.created(uri).body(userDto);
         } catch (Exception e) {
+
+            System.out.println(e);
             // if the error contain violates unique then return conflict response
             if (e.getMessage().contains("violates unique")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("User already exists"));
@@ -76,8 +82,14 @@ public class AuthenticationController {
 
             // return the response entity with HTTP status 200 and the token payload
             return ResponseEntity.ok().body(new LoginUserResponse(tokens.getAccessToken()));
+        } catch (BadCredentialsException exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto("Invalid email or password"));
+        } catch (InternalAuthenticationServiceException exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto(exception.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            System.out.println(e);
+            return ResponseEntity.internalServerError().body(new ErrorDto("Failed to login"));
+
         }
     }
 }

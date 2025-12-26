@@ -1,5 +1,6 @@
 package com.generalassembly.todo.authentication.services;
 
+import com.generalassembly.todo.authentication.dtos.CustomUser;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserRepository;
 import lombok.AllArgsConstructor;
@@ -27,10 +28,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with email %s not found", email)));
 
         // if the user found return the userDetails object using spring security User Class!
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), // user email
-                user.getPassword(), // user hashed password
-                Collections.emptyList() // no authorities
-        );
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getEmail(), // user email
+//                user.getPassword(), // user hashed password
+//                Collections.emptyList() // no authorities
+//        );
+
+        // if the user found return the custom userDetails object
+        return new CustomUser(user);
+
     }
 }

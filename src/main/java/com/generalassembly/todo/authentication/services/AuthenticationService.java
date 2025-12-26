@@ -2,6 +2,7 @@ package com.generalassembly.todo.authentication.services;
 
 import com.generalassembly.todo.authentication.AuthenticationMapper;
 import com.generalassembly.todo.authentication.dtos.AuthenticationTokensResponse;
+import com.generalassembly.todo.authentication.dtos.CustomUser;
 import com.generalassembly.todo.authentication.dtos.LoginUserRequest;
 import com.generalassembly.todo.authentication.dtos.RegisterUserRequest;
 import com.generalassembly.todo.configs.JwtConfig;
@@ -76,25 +77,21 @@ public class AuthenticationService {
         );
 
         // get the UserDetails object from the context
-        var userDetails = authentication.getPrincipal();
+        var userObj = (CustomUser) authentication.getPrincipal();
 
-        System.out.println(userDetails);
+        // get the user object
+        assert userObj != null;
+        var user = userObj.getUser();
 
-//        // get the user by email from the database
-//        var user = userRepository.findByEmail(request.getEmail())
-//                .orElseThrow(); // this should never throw since authentication would have failed earlier if user doesn't exist
-//
-//        // generate an access token (JWT) for the authenticated user
-//        var accessToken = jwtService.generateAccessToken(user);
-//
-//        // generate a refresh token (JWT) for the authenticated user
-//        var refreshToken = jwtService.generateRefreshToken(user);
-//
-//        // TODO: save the refresh token in the database (if you want to implement refresh token revocation)
-//
-//        // wrap and return the token in a AuthenticationTokensResponse object {accessToken:"abc", refreshToken:"xyz"}
-//        return new AuthenticationTokensResponse(accessToken, refreshToken);
+        // generate an access token (JWT) for the authenticated user
+        var accessToken = jwtService.generateAccessToken(user);
 
-        return null;
+        // generate a refresh token (JWT) for the authenticated user
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        // TODO: save the refresh token in the database (if you want to implement refresh token revocation)
+
+        // wrap and return the token in a AuthenticationTokensResponse object {accessToken:"abc", refreshToken:"xyz"}
+        return new AuthenticationTokensResponse(accessToken, refreshToken);
     }
 }
