@@ -7,6 +7,7 @@ import com.generalassembly.todo.authentication.services.AuthenticationService;
 import com.generalassembly.todo.configs.JwtConfig;
 import com.generalassembly.todo.global.dtos.ErrorDto;
 import com.generalassembly.todo.global.exceptions.BadRequestException;
+import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -50,8 +51,7 @@ public class AuthenticationController {
             return ResponseEntity.created(uri).body(userDto);
         } catch (DataIntegrityViolationException exception) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("User already exists"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDto("Error while registering new user")); // return general error
         }
     }
@@ -88,4 +88,24 @@ public class AuthenticationController {
 
         }
     }
+
+    // get current user endpoint
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        try {
+            // try to fetch the user
+            var userDto = authenticationService.me();
+
+            // return the user details with OK response
+            return ResponseEntity.ok(userDto);
+        } catch (ResourceNotFoundException exception) {
+            System.out.println("Resource not found from the catch not the global");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ErrorDto("Failed to fetch user details"));
+        }
+    }
+
+    // todo: logout endpoint
+//    public ResponseEntity<?> logoutUser(){}
 }

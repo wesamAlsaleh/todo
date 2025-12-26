@@ -2,19 +2,15 @@ package com.generalassembly.todo.authentication.services;
 
 import com.generalassembly.todo.authentication.AuthenticationMapper;
 import com.generalassembly.todo.authentication.dtos.AuthenticationTokensResponse;
-import com.generalassembly.todo.authentication.dtos.CustomUser;
+import com.generalassembly.todo.authentication.UserDetailsImpl;
 import com.generalassembly.todo.authentication.dtos.LoginUserRequest;
 import com.generalassembly.todo.authentication.dtos.RegisterUserRequest;
 import com.generalassembly.todo.configs.JwtConfig;
-import com.generalassembly.todo.global.exceptions.DuplicateResourceException;
-import com.generalassembly.todo.global.exceptions.InternalServerErrorException;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.User;
 import com.generalassembly.todo.users.UserRepository;
 import com.generalassembly.todo.users.dtos.UserDto;
-import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -77,7 +72,7 @@ public class AuthenticationService {
         );
 
         // get the UserDetails object from the context
-        var userObj = (CustomUser) authentication.getPrincipal();
+        var userObj = (UserDetailsImpl) authentication.getPrincipal();
 
         // get the user object
         assert userObj != null;
@@ -93,5 +88,15 @@ public class AuthenticationService {
 
         // wrap and return the token in a AuthenticationTokensResponse object {accessToken:"abc", refreshToken:"xyz"}
         return new AuthenticationTokensResponse(accessToken, refreshToken);
+    }
+
+    // function to get the current user details
+    public UserDto me() {
+        // get the user by id (id is the principal in the security context holder)
+        var user = userRepository.findById(getSecurityContextPrincipal())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // return the user as UserDto format
+        return authenticationMapper.toDto(user);
     }
 }

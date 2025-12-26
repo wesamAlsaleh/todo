@@ -65,7 +65,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         var authenticationTokenObject = new UsernamePasswordAuthenticationToken(
                 userId, // user id as principal
                 null, // no credentials because we are using JWT token for authentication (not username and password)
-                Collections.emptyList() // no roles in the project
+                Collections.emptyList() // no roles in this project to declare
         );
 
         // set the request details in the authentication token object (IP address, session ID, etc.) `boilerplate code!`

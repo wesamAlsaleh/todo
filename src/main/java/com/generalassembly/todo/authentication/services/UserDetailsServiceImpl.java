@@ -1,15 +1,12 @@
 package com.generalassembly.todo.authentication.services;
 
-import com.generalassembly.todo.authentication.dtos.CustomUser;
+import com.generalassembly.todo.authentication.UserDetailsImpl;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 // Note that UserDetailsService is a core interface in Spring Security, and it expects exception to UsernameNotFoundException, not custom exceptions
 
@@ -22,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     // This method should return the user details by email
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // get the user by email or throw exception if not found
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with email %s not found", email)));
@@ -35,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        );
 
         // if the user found return the custom userDetails object
-        return new CustomUser(user);
+        return new UserDetailsImpl(user);
 
     }
 }

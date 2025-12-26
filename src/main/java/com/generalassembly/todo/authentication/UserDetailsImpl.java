@@ -1,4 +1,4 @@
-package com.generalassembly.todo.authentication.dtos;
+package com.generalassembly.todo.authentication;
 
 import com.generalassembly.todo.users.User;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
-public class CustomUser implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     @Getter
     private User user;
 
