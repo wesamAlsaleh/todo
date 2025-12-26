@@ -99,4 +99,6 @@ public class AuthenticationService {
         // return the user as UserDto format
         return authenticationMapper.toDto(user);
     }
+
+
 }

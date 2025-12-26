@@ -67,9 +67,9 @@ public class AuthenticationController {
             var tokens = authenticationService.login(request);
 
             // store the refresh token in an HTTP-only secure cookie
-            var cookie = new Cookie("refresh_token", tokens.getRefreshToken());
+            var cookie = new Cookie("refreshToken", tokens.getRefreshToken());
             cookie.setHttpOnly(true); // prevent access to the cookie via JavaScript (mitigates XSS)
-            cookie.setPath("/auth/refresh-token"); // cookie will be sent only to /auth/refresh-access-token endpoint
+            cookie.setPath("/auth/refresh-access-token"); // cookie will be sent only to /auth/refresh-access-token endpoint
             cookie.setMaxAge(Math.toIntExact(jwtConfig.getRefreshTokenValiditySeconds())); // set cookie expiration (same as refresh token)
             cookie.setSecure(true); // send cookie only over HTTPS
 
@@ -78,14 +78,10 @@ public class AuthenticationController {
 
             // return the response entity with HTTP status 200 and the token payload
             return ResponseEntity.ok().body(new LoginUserResponse(tokens.getAccessToken()));
-        } catch (BadCredentialsException exception) {
+        } catch (BadCredentialsException | InternalAuthenticationServiceException exception) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto("Invalid email or password"));
-        } catch (InternalAuthenticationServiceException exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto(exception.getMessage()));
         } catch (Exception e) {
-            System.out.println(e);
             return ResponseEntity.internalServerError().body(new ErrorDto("Failed to login"));
-
         }
     }
 
@@ -99,13 +95,31 @@ public class AuthenticationController {
             // return the user details with OK response
             return ResponseEntity.ok(userDto);
         } catch (ResourceNotFoundException exception) {
-            System.out.println("Resource not found from the catch not the global");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ErrorDto("Failed to fetch user details"));
         }
     }
 
-    // todo: logout endpoint
-//    public ResponseEntity<?> logoutUser(){}
+    // logout endpoint
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletResponse response) {
+        try {
+            // delete the cookie
+            var cookie = new Cookie("refreshToken", "");
+
+            // make the refresh token in the browser cookies to be expired
+            cookie.setMaxAge(0); // set age to 0 to trigger immediate deletion
+            cookie.setPath("/auth/refresh-access-token"); // cookie will be sent only to /auth/refresh-access-token endpoint
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+
+            // add the configured cookie to the response
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok().build();
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 }
