@@ -11,6 +11,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,16 +48,11 @@ public class AuthenticationController {
 
             // return the response with status 201 and the uri (location of the created entity)
             return ResponseEntity.created(uri).body(userDto);
-        } catch (Exception e) {
-
-            System.out.println(e);
-            // if the error contain violates unique then return conflict response
-            if (e.getMessage().contains("violates unique")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("User already exists"));
-            }
-
-            // return general error
-            return ResponseEntity.badRequest().body(new ErrorDto("Error creating user"));
+        } catch (DataIntegrityViolationException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("User already exists"));
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDto("Error while registering new user")); // return general error
         }
     }
 
