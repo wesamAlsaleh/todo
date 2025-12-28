@@ -1,5 +1,6 @@
 package com.generalassembly.todo.configs;
 
+import com.generalassembly.todo.authentication.AuthenticationFilter;
 import com.generalassembly.todo.authentication.services.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +17,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-    private UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationFilter authenticationFilter;
 
     // bean to configure the app security configuration
     @Bean
@@ -37,11 +40,18 @@ public class SecurityConfig {
         // define endpoint access rules
         http.authorizeHttpRequests(request ->
                 request
+                        // Public endpoints (no authentication required)
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh-access-token").permitAll()
+                        // All other endpoints (authentication token required)
+                        .anyRequest().authenticated()
         );
+
+        // add custom filter before each request
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class); // valid access token check
 
         // Build and return the configured SecurityFilterChain (Configuration object to be used by Spring Security at runtime)
         return http.build();

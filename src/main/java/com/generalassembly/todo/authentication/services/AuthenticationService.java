@@ -101,7 +101,6 @@ public class AuthenticationService {
         return authenticationMapper.toDto(user);
     }
 
-
     // function to update the access token by refresh token
     public String refreshAccessToken(String refreshToken) {
         // if the refresh token is expired return unauthorized

@@ -61,6 +61,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         // get the user id from the token
         var userId = jwtService.getUserIdFromToken(token);
 
+        // Give an authorization to the user who made the request
         // build an authentication token object with the user id (the token object is used by Spring Security to represent the authenticated user)
         var authenticationTokenObject = new UsernamePasswordAuthenticationToken(
                 userId, // user id as principal
