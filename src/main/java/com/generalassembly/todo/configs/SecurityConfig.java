@@ -43,6 +43,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request ->
                 request
                         // Public endpoints (no authentication required)
+                        .requestMatchers(HttpMethod.GET, "/auth/").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
