@@ -2,6 +2,7 @@ package com.generalassembly.todo.authentication;
 
 import com.generalassembly.todo.authentication.dtos.LoginUserRequest;
 import com.generalassembly.todo.authentication.dtos.LoginUserResponse;
+import com.generalassembly.todo.authentication.dtos.RefreshAccessTokenResponse;
 import com.generalassembly.todo.authentication.dtos.RegisterUserRequest;
 import com.generalassembly.todo.authentication.services.AuthenticationService;
 import com.generalassembly.todo.configs.JwtConfig;
@@ -63,7 +64,7 @@ public class AuthenticationController {
             HttpServletResponse response
     ) {
         try {
-            // attempt to sign in
+            // attempt to log in the user and return the JwtTokenResponse (if credentials are invalid or user not found, an exception will be thrown)
             var tokens = authenticationService.login(request);
 
             // store the refresh token in an HTTP-only secure cookie
@@ -82,22 +83,6 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto("Invalid email or password"));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ErrorDto("Failed to login"));
-        }
-    }
-
-    // get current user endpoint
-    @GetMapping("/me")
-    public ResponseEntity<?> me() {
-        try {
-            // try to fetch the user
-            var userDto = authenticationService.me();
-
-            // return the user details with OK response
-            return ResponseEntity.ok(userDto);
-        } catch (ResourceNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ErrorDto("Failed to fetch user details"));
         }
     }
 
@@ -120,6 +105,40 @@ public class AuthenticationController {
             return ResponseEntity.ok().build();
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    // get current user endpoint
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        try {
+            // try to fetch the user
+            var userDto = authenticationService.me();
+
+            // return the user details with OK response
+            return ResponseEntity.ok(userDto);
+        } catch (ResourceNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.internalServerError().body(new ErrorDto("Failed to fetch user details"));
+        }
+    }
+
+    // refresh token endpoint
+    @PostMapping("/refresh-access-token")
+    public ResponseEntity<?> refreshAccessToken(
+            @CookieValue(value = "refreshToken") String refreshToken
+    ) {
+        // try to update the access token using the refresh token
+        try {
+            // try to update and get the new access token
+            var token = authenticationService.refreshAccessToken(refreshToken);
+
+            // return the access token in the body
+            return ResponseEntity.ok().body(new RefreshAccessTokenResponse(token));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ErrorDto("Failed to refresh access token"));
         }
     }
 }

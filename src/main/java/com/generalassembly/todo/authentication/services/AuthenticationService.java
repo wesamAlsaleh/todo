@@ -12,6 +12,7 @@ import com.generalassembly.todo.users.UserRepository;
 import com.generalassembly.todo.users.dtos.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -100,5 +101,21 @@ public class AuthenticationService {
         return authenticationMapper.toDto(user);
     }
 
+
+    // function to update the access token by refresh token
+    public String refreshAccessToken(String refreshToken) {
+        // if the refresh token is expired return unauthorized
+        if (jwtService.isTokenExpired(refreshToken)) {
+            // todo: change the exception to proper one
+            throw new BadCredentialsException("Please login again");
+        }
+
+        // get the user by id
+        var user = userRepository.findById(jwtService.getUserIdFromToken(refreshToken))
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // generate and return the new access token
+        return jwtService.generateAccessToken(user);
+    }
 
 }
