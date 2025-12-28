@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/refresh-access-token").permitAll()
-                        // All other endpoints (authentication token required)
+                        // All other endpoints (authentication token required) [need to pass the auth filter]
                         .anyRequest().authenticated()
         );
 
