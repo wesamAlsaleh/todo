@@ -32,7 +32,7 @@ public class AuthenticationService {
 
 
     // function to get the user id from the authentication token object in the security context holder
-    private Long getSecurityContextPrincipal() {
+    private Long getUserIdFromSecurityContext() {
         // get the authentication token object from the Security Context Holder
         var authenticationObject = SecurityContextHolder.getContext().getAuthentication(); // authentication is the object that holds the authentication information for the user
 
@@ -93,8 +93,8 @@ public class AuthenticationService {
 
     // function to get the current user details
     public UserDto me() {
-        // get the user by id (id is the principal in the security context holder)
-        var user = userRepository.findById(getSecurityContextPrincipal())
+        // get the user by id (user id is the principal in the security context holder)
+        var user = userRepository.findById(getUserIdFromSecurityContext())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // return the user as UserDto format

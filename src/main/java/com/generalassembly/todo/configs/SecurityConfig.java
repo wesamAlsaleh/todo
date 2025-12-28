@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -41,7 +43,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request ->
                 request
                         // Public endpoints (no authentication required)
-                        .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
@@ -52,6 +53,19 @@ public class SecurityConfig {
 
         // add custom filter before each request
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class); // valid access token check
+
+        // add custom security exceptions
+        http.exceptionHandling(exceptionHandler -> {
+                    // if the user is not logged in (no valid token) map the default AuthenticationException to http 401 response
+                    exceptionHandler.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)); // Tell Spring Security to return 401
+
+                    // if the user is logged in but not authorized (need specific rule (authorities in the authToken obj) send http 403 response
+                    exceptionHandler.accessDeniedHandler(
+                            (request, response, accessDeniedException) -> {
+                                response.setStatus(HttpStatus.FORBIDDEN.value()); // Tell Spring Security to return 403
+                            });
+                }
+        );
 
         // Build and return the configured SecurityFilterChain (Configuration object to be used by Spring Security at runtime)
         return http.build();
