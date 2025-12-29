@@ -117,4 +117,10 @@ public class AuthenticationService {
         return jwtService.generateAccessToken(user);
     }
 
+    // function to get the authenticated user
+    public Long getUserId() {
+        // get the user ID from the security context holder
+        return getUserIdFromSecurityContext();
+    }
+
 }

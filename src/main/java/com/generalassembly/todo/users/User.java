@@ -1,5 +1,6 @@
 package com.generalassembly.todo.users;
 
+import com.generalassembly.todo.usersProfile.UserProfile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
