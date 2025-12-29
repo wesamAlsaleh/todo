@@ -2,13 +2,11 @@ package com.generalassembly.todo.usersProfile;
 
 import com.generalassembly.todo.global.exceptions.BadRequestException;
 import com.generalassembly.todo.usersProfile.dtos.CreateUserProfileRequest;
+import com.generalassembly.todo.usersProfile.dtos.UpdateUserProfileRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
@@ -39,6 +37,19 @@ public class UserProfileController {
     }
 
     // update user profile endpoint
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateUserProfile(
+            @Valid @RequestBody UpdateUserProfileRequest request
+    ) {
+        // try to update user profile
+        try {
+            // update the user profile
+            var userProfileDto = userProfileService.updateUserProfile(request);
 
-
+            // return the response with status 201 and the uri (location of the created entity)
+            return ResponseEntity.ok(userProfileDto);
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to update user profile");
+        }
+    }
 }

@@ -32,4 +32,9 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
+
+    // function to update the updatedAt field by the current time
+    public void setUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
 }
