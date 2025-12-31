@@ -1,6 +1,7 @@
 package com.generalassembly.todo.categories;
 
 import com.generalassembly.todo.items.Item;
+import com.generalassembly.todo.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -41,6 +42,10 @@ public class Category {
     @UpdateTimestamp
     private Instant updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Item> items;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the user details
+    @JoinColumn(name = "user_id") // fill the field user_id
+    private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the category items
+    private List<Item> items; // list of items
 }

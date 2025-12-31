@@ -4,6 +4,7 @@ import com.generalassembly.todo.authentication.services.AuthenticationService;
 import com.generalassembly.todo.global.exceptions.BadRequestException;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserRepository;
+import com.generalassembly.todo.users.UserService;
 import com.generalassembly.todo.usersProfile.dtos.CreateUserProfileRequest;
 import com.generalassembly.todo.usersProfile.dtos.UpdateUserProfileRequest;
 import com.generalassembly.todo.usersProfile.dtos.UserProfileDto;
@@ -16,18 +17,17 @@ import java.time.Instant;
 @AllArgsConstructor
 public class UserProfileService {
     private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
     private final UserProfileMapper userProfileMapper;
     private final UserProfileRepository userProfileRepository;
+    private final UserService userService;
 
     // function to create user profile
     public UserProfileDto createUserProfile(CreateUserProfileRequest request) {
         // get the authenticated user
-        var user = userRepository.findById(authenticationService.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        var user = userService.getUser();
 
         // if the user has a profile return error
-        if (userProfileRepository.existByUserId(authenticationService.getUserId())) {
+        if (userProfileRepository.existByUserId(user.getId())) {
             throw new BadRequestException("User has a profile that already exists");
         }
 
@@ -56,8 +56,7 @@ public class UserProfileService {
     // function to update user profile
     public UserProfileDto updateUserProfile(UpdateUserProfileRequest request) {
         // get the authenticated user
-        var user = userRepository.findById(authenticationService.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        var user = userService.getUser();
 
         // get the user profile
         var userProfile = userProfileRepository.findByUserId(user.getId())

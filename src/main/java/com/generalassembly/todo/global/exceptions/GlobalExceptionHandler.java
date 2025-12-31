@@ -89,6 +89,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorDto("Unreadable Message, Please make a valid request body"));
     }
 
+    // Method to handle RuntimeException
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDto> handleRuntimeException(RuntimeException exception) {
+        return ResponseEntity.badRequest().body(new ErrorDto(exception.getMessage()));
+    }
+
     // Method to handle duplicate key value violates "23505 postgres"
 //    @ExceptionHandler(DataIntegrityViolationException.class)
 //    public ResponseEntity<ErrorDto> handleDuplicateKeyValueViolation(DataIntegrityViolationException exception) {

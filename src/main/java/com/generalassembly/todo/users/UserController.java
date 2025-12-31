@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    // get the full details of the authenticated user
+    // get the full details of the authenticated user endpoint
     @GetMapping
     public ResponseEntity<?> getUserDetails() {
         // try to fetch user details
