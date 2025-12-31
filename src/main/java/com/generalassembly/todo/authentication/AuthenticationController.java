@@ -120,7 +120,6 @@ public class AuthenticationController {
         } catch (ResourceNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto(exception.getMessage()));
         } catch (Exception e) {
-            System.out.println(e);
             return ResponseEntity.internalServerError().body(new ErrorDto("Failed to fetch user details"));
         }
     }

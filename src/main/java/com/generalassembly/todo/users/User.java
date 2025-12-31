@@ -1,5 +1,6 @@
 package com.generalassembly.todo.users;
 
+import com.generalassembly.todo.usersProfile.UserProfile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,12 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserProfile userProfile;
+
+    // function to update the updatedAt field by the current time
+    public void setUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
 }

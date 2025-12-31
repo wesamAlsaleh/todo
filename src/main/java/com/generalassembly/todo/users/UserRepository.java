@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Long> {
-    // function to get the user by id
+    // function to get the user by id including his profile
     Optional<User> findByEmail(String email);
 
     // function to check if the email already exits
