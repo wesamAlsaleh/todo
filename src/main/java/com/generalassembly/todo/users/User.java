@@ -33,6 +33,9 @@ public class User {
     @UpdateTimestamp
     private Instant updatedAt;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserProfile userProfile;
+
     // function to update the updatedAt field by the current time
     public void setUpdatedAt() {
         this.updatedAt = Instant.now();

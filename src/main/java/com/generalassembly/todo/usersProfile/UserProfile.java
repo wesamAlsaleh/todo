@@ -14,7 +14,7 @@ public class UserProfile {
     @Id
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY) // do not fetch user details
+    @OneToOne(fetch = FetchType.LAZY) // do not fetch user details when fetching the user profile!
     @MapsId // This tells JPA: "Use the User's ID as the Primary Key for this profile"
     @JoinColumn(name = "id")
     private User user;
