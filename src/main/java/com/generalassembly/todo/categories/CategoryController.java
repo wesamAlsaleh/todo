@@ -53,4 +53,19 @@ public class CategoryController {
     // update category by id endpoint
 
     // delete category by id endpoint
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        // try to delete a category by category id
+        try {
+            // delete the category from the system
+            var deletedCategoryDto = categoryService.deleteCategory(id);
+
+            // return response with the category as body
+            return ResponseEntity.ok(deletedCategoryDto);
+
+        } catch (RuntimeException e) {
+            System.out.println(e);
+            throw new RuntimeException("Error while deleting category");
+        }
+    }
 }

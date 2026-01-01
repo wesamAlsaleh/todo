@@ -1,5 +1,6 @@
 package com.generalassembly.todo.items;
 
+import com.generalassembly.todo.categories.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,5 +39,8 @@ public class Item {
     @UpdateTimestamp
     private Instant updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY) // do not fetch the category details
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }

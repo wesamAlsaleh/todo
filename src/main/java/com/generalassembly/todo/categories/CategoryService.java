@@ -4,6 +4,7 @@ import com.generalassembly.todo.authentication.services.AuthenticationService;
 import com.generalassembly.todo.categories.dtos.CategoriesDto;
 import com.generalassembly.todo.categories.dtos.CategoryDto;
 import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
+import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,29 @@ public class CategoryService {
 
         // return
         return new CategoriesDto(categoryDtos);
+    }
+
+    // u
+
+    // function to delete a category by id
+    public CategoryDto deleteCategory(Long id) {
+        // get the authenticated user
+        var user = userService.getUser();
+
+        System.out.println("s");
+
+        // get the category with the provided password
+        var category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        System.out.println(category);
+
+        System.out.println("d");
+
+        // delete the record from the db
+        categoryRepository.delete(category);
+
+        // return the deleted category
+        return categoryMapper.toDto(category);
     }
 }

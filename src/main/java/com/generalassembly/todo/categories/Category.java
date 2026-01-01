@@ -42,10 +42,10 @@ public class Category {
     @UpdateTimestamp
     private Instant updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the user details
+    @ManyToOne(fetch = FetchType.LAZY) // do not fetch the user details
     @JoinColumn(name = "user_id") // fill the field user_id
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the category items
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the category items
     private List<Item> items; // list of items
 }
