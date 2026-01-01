@@ -4,10 +4,7 @@ import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
@@ -37,7 +34,21 @@ public class CategoryController {
         }
     }
 
-    // read category by id endpoint
+    // get user categories endpoint
+    @GetMapping("/read")
+    public ResponseEntity<?> getCategories() {
+        // try to get the user categories
+        try {
+            // get the user categories
+            var categoriesDtos = categoryService.getCategories();
+
+            // return the categories as the body
+            return ResponseEntity.ok(categoriesDtos);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error while getting categories");
+        }
+    }
+
 
     // update category by id endpoint
 

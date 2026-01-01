@@ -1,11 +1,15 @@
 package com.generalassembly.todo.categories;
 
 import com.generalassembly.todo.authentication.services.AuthenticationService;
+import com.generalassembly.todo.categories.dtos.CategoriesDto;
 import com.generalassembly.todo.categories.dtos.CategoryDto;
 import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
 import com.generalassembly.todo.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,5 +36,23 @@ public class CategoryService {
 
         // return the category as categoryDto
         return categoryMapper.toDto(category);
+    }
+
+    // get all categories for a user
+    public CategoriesDto getCategories() {
+        // get the authenticated user
+        var user = userService.getUser();
+
+        // get the categories
+        var categories = categoryRepository.getCategoriesByUserId(user.getId());
+
+        // array holder
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+
+        // convert each category to categoryDto
+        categories.forEach(category -> categoryDtos.add(categoryMapper.toDto(category)));
+
+        // return
+        return new CategoriesDto(categoryDtos);
     }
 }
