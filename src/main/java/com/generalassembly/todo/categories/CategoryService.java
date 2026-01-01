@@ -1,13 +1,14 @@
 package com.generalassembly.todo.categories;
 
-import com.generalassembly.todo.authentication.services.AuthenticationService;
 import com.generalassembly.todo.categories.dtos.CategoriesDto;
 import com.generalassembly.todo.categories.dtos.CategoryDto;
 import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
+import com.generalassembly.todo.categories.dtos.UpdateCategoryRequest;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,22 +58,35 @@ public class CategoryService {
         return new CategoriesDto(categoryDtos);
     }
 
-    // u
-
-    // function to delete a category by id
-    public CategoryDto deleteCategory(Long id) {
-        // get the authenticated user
-        var user = userService.getUser();
-
-        System.out.println("s");
-
-        // get the category with the provided password
+    // function to update a category by id
+    public CategoryDto updateCategory(Long id, UpdateCategoryRequest request) {
+        // get the category with the provided id
         var category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
-        System.out.println(category);
+        // extract the values
+        var name = request.getName();
+        var description = request.getDescription();
 
-        System.out.println("d");
+        // replace the provided fields with the existence fields
+        if (StringUtils.hasText(name)) {
+            category.setName(name);
+
+        }
+        category.setDescription(description); // not required field
+
+        // update the changes
+        categoryRepository.save(category);
+
+        // return the updated category as Dto
+        return categoryMapper.toDto(category);
+    }
+
+    // function to delete a category by id
+    public CategoryDto deleteCategory(Long id) {
+        // get the category with the provided id
+        var category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         // delete the record from the db
         categoryRepository.delete(category);

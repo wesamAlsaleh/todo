@@ -48,4 +48,5 @@ public class Category {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the category items
     private List<Item> items; // list of items
+
 }

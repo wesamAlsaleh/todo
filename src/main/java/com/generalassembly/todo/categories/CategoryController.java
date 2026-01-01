@@ -1,8 +1,10 @@
 package com.generalassembly.todo.categories;
 
 import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
+import com.generalassembly.todo.categories.dtos.UpdateCategoryRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -49,8 +51,23 @@ public class CategoryController {
         }
     }
 
-
     // update category by id endpoint
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateCategory(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCategoryRequest request
+    ) {
+        // try to update a category by id
+        try {
+            // update the category
+            var categoryDto = categoryService.updateCategory(id, request);
+
+            // return a success response
+            return ResponseEntity.accepted().body(categoryDto);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     // delete category by id endpoint
     @DeleteMapping("/delete/{id}")
@@ -62,9 +79,7 @@ public class CategoryController {
 
             // return response with the category as body
             return ResponseEntity.ok(deletedCategoryDto);
-
         } catch (RuntimeException e) {
-            System.out.println(e);
             throw new RuntimeException("Error while deleting category");
         }
     }
