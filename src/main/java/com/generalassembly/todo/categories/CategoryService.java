@@ -40,6 +40,13 @@ public class CategoryService {
         return categoryMapper.toDto(category);
     }
 
+    // helper function to get category by id from the db
+    public Category fetchCategory(Long categoryId) {
+        // get the category with the provided id
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+    }
+
     // get all categories for a user
     public CategoriesDto getCategories() {
         // get the authenticated user
@@ -58,18 +65,19 @@ public class CategoryService {
         return new CategoriesDto(categoryDtos);
     }
 
-    // function to get category by id
-    public Category getCategory(Long categoryId) {
-        // get the category with the provided id
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-    }
+    // function to get a single category by id
+    public CategoryDto getCategory(Long categoryId) {
+        // get the category by id
+        var category = fetchCategory(categoryId);
 
+        // return the category as Dto
+        return categoryMapper.toDto(category);
+    }
 
     // function to update a category by id
     public CategoryDto updateCategory(Long id, UpdateCategoryRequest request) {
         // get the category with the provided id
-        var category = getCategory(id);
+        var category = fetchCategory(id);
 
         // extract the values
         var name = request.getName();
@@ -92,7 +100,7 @@ public class CategoryService {
     // function to delete a category by id
     public CategoryDto deleteCategory(Long id) {
         // get the category with the provided id
-        var category = getCategory(id);
+        var category = fetchCategory(id);
 
         // delete the record from the db
         categoryRepository.delete(category);

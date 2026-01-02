@@ -16,13 +16,20 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
 
+    // helper function to fetch the item from the db
+    private Item fetchItem(Long id) {
+        // get and return the item
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+    }
+
     // function to create item
     public ItemDto createItem(
             Long categoryId,
             CreateItemRequest request
     ) {
         // get the category
-        var category = categoryService.getCategory(categoryId);
+        var category = categoryService.fetchCategory(categoryId);
 
         // create the item instance
         var item = new Item();
@@ -35,13 +42,6 @@ public class ItemService {
 
         // convert the item to ItemDto and return it
         return itemMapper.toDto(item);
-    }
-
-    // helper function to fetch the item from the db
-    private Item fetchItem(Long id) {
-        // get and return the item
-        return itemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
     }
 
     // function to fetch single item by id

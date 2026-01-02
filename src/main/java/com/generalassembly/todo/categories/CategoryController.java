@@ -16,71 +16,63 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // create category endpoint
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<?> createCategory(
             @Valid @RequestBody CreateCategoryRequest request,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        // try to create category record
-        try {
-            // create category
-            var categoryDto = categoryService.createCategory(request);
+        // create category
+        var categoryDto = categoryService.createCategory(request);
 
-            // create the URI to return it in the response body
-            var uri = uriComponentsBuilder.path("/categories/{id}").buildAndExpand(categoryDto.getId()).toUri();
+        // create the URI to return it in the response body
+        var uri = uriComponentsBuilder.path("/categories/{id}").buildAndExpand(categoryDto.getId()).toUri();
 
-            // return the response with status 201 and the uri (location of the created entity)
-            return ResponseEntity.created(uri).body(categoryDto);
-        } catch (Exception e) {
-            throw new RuntimeException("Error while creating category");
-        }
+        // return the response with status 201 and the uri (location of the created entity)
+        return ResponseEntity.created(uri).body(categoryDto);
     }
 
     // get user categories endpoint
-    @GetMapping("/read")
+    @GetMapping("/")
     public ResponseEntity<?> getCategories() {
-        // try to get the user categories
-        try {
-            // get the user categories
-            var categoriesDtos = categoryService.getCategories();
+        // get the user categories
+        var categoriesDtos = categoryService.getCategories();
 
-            // return the categories as the body
-            return ResponseEntity.ok(categoriesDtos);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error while getting categories");
-        }
+        // return the categories as the body
+        return ResponseEntity.ok(categoriesDtos);
+    }
+
+    // get single category by id endpoint
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategory(
+            @PathVariable Long id
+    ) {
+        // get the category
+        var categoryDto = categoryService.getCategory(id);
+
+        // return the category as the body
+        return ResponseEntity.ok(categoryDto);
     }
 
     // update category by id endpoint
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCategoryRequest request
     ) {
-        // try to update a category by id
-        try {
-            // update the category
-            var categoryDto = categoryService.updateCategory(id, request);
+        // update the category
+        var categoryDto = categoryService.updateCategory(id, request);
 
-            // return a success response
-            return ResponseEntity.accepted().body(categoryDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // return a success response
+        return ResponseEntity.accepted().body(categoryDto);
     }
 
     // delete category by id endpoint
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
-        // try to delete a category by category id
-        try {
-            // delete the category from the system
-            var deletedCategoryDto = categoryService.deleteCategory(id);
+        // delete the category from the system
+        var deletedCategoryDto = categoryService.deleteCategory(id);
 
-            // return response with the category as body
-            return ResponseEntity.ok(deletedCategoryDto);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error while deleting category");
-        }
+        // return response with the category as body
+        return ResponseEntity.ok(deletedCategoryDto);
     }
 }
