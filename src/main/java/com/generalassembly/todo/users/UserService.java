@@ -15,11 +15,22 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserProfileMapper userProfileMapper;
 
+    // function to get the authenticated user id
+    public Long getUserId() {
+        return authenticationService.getUserId();
+    }
+
+    // function to get the authenticated user
+    public User getUser() {
+        // get the user
+        return userRepository.findById(getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
     // function to get the user details
     public UserDetailsDto getUserDetails() {
-        // get the user with
-        var user = userRepository.findById(authenticationService.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        // get the authenticated user with
+        var user = getUser();
 
         // prepare and return the output as Dto
         return userProfileMapper.toDto(user);

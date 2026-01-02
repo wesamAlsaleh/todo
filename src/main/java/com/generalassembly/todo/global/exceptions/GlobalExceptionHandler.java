@@ -1,6 +1,8 @@
 package com.generalassembly.todo.global.exceptions;
 
 import com.generalassembly.todo.global.dtos.ErrorDto;
+import org.hibernate.TypeMismatchException;
+import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -89,6 +92,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorDto("Unreadable Message, Please make a valid request body"));
     }
 
+    // Method to handle RuntimeException
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDto> handleRuntimeException(RuntimeException exception) {
+        return ResponseEntity.badRequest().body(new ErrorDto(exception.getMessage()));
+    }
+
     // Method to handle duplicate key value violates "23505 postgres"
 //    @ExceptionHandler(DataIntegrityViolationException.class)
 //    public ResponseEntity<ErrorDto> handleDuplicateKeyValueViolation(DataIntegrityViolationException exception) {
@@ -97,6 +106,4 @@ public class GlobalExceptionHandler {
 //
 //
 //    }
-
-
 }
