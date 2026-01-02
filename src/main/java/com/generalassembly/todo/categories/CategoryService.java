@@ -49,11 +49,11 @@ public class CategoryService {
 
     // get all categories for a user
     public CategoriesDto getCategories() {
-        // get the authenticated user
-        var user = userService.getUser();
+        // get the authenticated user id
+        var userId = userService.getUserId();
 
         // get the categories
-        var categories = categoryRepository.getCategoriesByUserId(user.getId());
+        var categories = categoryRepository.getCategoriesByUserId(userId);
 
         // array holder
         List<CategoryDto> categoryDtos = new ArrayList<>();

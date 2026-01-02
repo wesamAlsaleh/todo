@@ -15,10 +15,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserProfileMapper userProfileMapper;
 
+    // function to get the authenticated user id
+    public Long getUserId() {
+        return authenticationService.getUserId();
+    }
+
     // function to get the authenticated user
     public User getUser() {
         // get the user
-        return userRepository.findById(authenticationService.getUserId())
+        return userRepository.findById(getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
