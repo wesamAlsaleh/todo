@@ -24,7 +24,7 @@ public class UserService {
 
     // function to get the user details
     public UserDetailsDto getUserDetails() {
-        // get the user with
+        // get the authenticated user with
         var user = getUser();
 
         // prepare and return the output as Dto

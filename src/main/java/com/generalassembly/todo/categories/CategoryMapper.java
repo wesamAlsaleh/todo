@@ -9,5 +9,6 @@ public interface CategoryMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "categoryName", source = "name")
     @Mapping(target = "categoryDescription", source = "description")
+    @Mapping(target = "items", source = "items")
     CategoryDto toDto(Category category);
 }

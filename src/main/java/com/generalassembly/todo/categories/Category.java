@@ -46,7 +46,6 @@ public class Category {
     @JoinColumn(name = "user_id") // fill the field user_id
     private User user;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // do not fetch the category items
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL) // fetch the category items when fetching a category
     private List<Item> items; // list of items
-
 }

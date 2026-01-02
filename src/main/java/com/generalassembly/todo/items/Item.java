@@ -42,5 +42,4 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY) // do not fetch the category details
     @JoinColumn(name = "category_id")
     private Category category;
-
 }

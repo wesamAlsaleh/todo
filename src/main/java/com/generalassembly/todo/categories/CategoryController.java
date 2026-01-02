@@ -26,7 +26,7 @@ public class CategoryController {
             // create category
             var categoryDto = categoryService.createCategory(request);
 
-            // create the URI  to return it in the response body
+            // create the URI to return it in the response body
             var uri = uriComponentsBuilder.path("/categories/{id}").buildAndExpand(categoryDto.getId()).toUri();
 
             // return the response with status 201 and the uri (location of the created entity)

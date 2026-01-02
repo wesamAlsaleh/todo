@@ -58,11 +58,18 @@ public class CategoryService {
         return new CategoriesDto(categoryDtos);
     }
 
+    // function to get category by id
+    public Category getCategory(Long categoryId) {
+        // get the category with the provided id
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+    }
+
+
     // function to update a category by id
     public CategoryDto updateCategory(Long id, UpdateCategoryRequest request) {
         // get the category with the provided id
-        var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        var category = getCategory(id);
 
         // extract the values
         var name = request.getName();
@@ -85,8 +92,7 @@ public class CategoryService {
     // function to delete a category by id
     public CategoryDto deleteCategory(Long id) {
         // get the category with the provided id
-        var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        var category = getCategory(id);
 
         // delete the record from the db
         categoryRepository.delete(category);
