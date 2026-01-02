@@ -74,4 +74,17 @@ public class ItemController {
     }
 
     // delete item endpoint
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable String id) {
+        // try to delete item
+        try {
+            // delete the item
+            var itemDto = itemService.deleteItem(Long.parseLong(id));
+
+            // return the deleted item as the response body
+            return ResponseEntity.ok(itemDto);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete the item");
+        }
+    }
 }

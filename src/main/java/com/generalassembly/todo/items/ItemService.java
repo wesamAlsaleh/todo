@@ -70,4 +70,16 @@ public class ItemService {
         // return the updated entity
         return itemMapper.toDto(item);
     }
+
+    // function to delete an item
+    public ItemDto deleteItem(Long itemId) {
+        // get the item to delete it
+        var item = fetchItem(itemId);
+
+        // delete it from the db
+        itemRepository.delete(item);
+
+        // return the deleted item
+        return itemMapper.toDto(item);
+    }
 }
