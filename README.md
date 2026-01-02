@@ -12,7 +12,7 @@ This repository contains a Spring Boot Todo application developed for my homewor
 
 ## ✅ What Went Right
 
-The overall architecture of the application came together smoothly. Using the **Repository Pattern** with Spring Data JPA allowed me to handle complex database interactions with minimal boilerplate code. Integrating **User Authentication** early on provided a solid security foundation, making the subsequent Category and Item features feel like a complete, private product.
+The overall structure of the application came together very smoothly. The Repository Pattern provided by Spring Data JPA made it easy to implement CRUD operations without writing complex boilerplate SQL, and the User Authentication integration provided a solid security foundation for the rest of the features.
 
 ## 🚧 Challenges Faced
 
@@ -28,4 +28,4 @@ The overall architecture of the application came together smoothly. Using the **
 
 ## ❤️ Favorite Part
 
-My favorite part was **implementing the authentication logic**. There is a great sense of satisfaction in building a secure system where data is protected. Ensuring that a user can only access and modify their own specific categories and items made the project feel like a real-world application.
+My favorite part was **implementing the authentication logic**. There is something satisfying about securing a system and ensuring that users can only see and manage their own data. 
