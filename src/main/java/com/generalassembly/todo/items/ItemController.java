@@ -39,8 +39,27 @@ public class ItemController {
     }
 
     // get item endpoint
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getItem(
+            @PathVariable String id) {
+        // try to fetch the item
+        try {
+            // fetch the item
+            var itemDto = itemService.getItem(Long.parseLong(id));
+
+            // return it in the body
+            return ResponseEntity.ok(itemDto);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch the item details");
+        }
+    }
+
+    // get items for a category endpoint
 
     // update item endpoint
+    public ResponseEntity<?> updateItem() {
+        return null;
+    }
 
     // delete item endpoint
 }

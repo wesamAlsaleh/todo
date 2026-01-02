@@ -1,6 +1,7 @@
 package com.generalassembly.todo.items;
 
 import com.generalassembly.todo.categories.CategoryService;
+import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
 import com.generalassembly.todo.items.dtos.CreateItemRequest;
 import com.generalassembly.todo.items.dtos.ItemDto;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,16 @@ public class ItemService {
         itemRepository.save(item);
 
         // convert the item to ItemDto and return it
+        return itemMapper.toDto(item);
+    }
+
+    // function to fetch single item by id
+    public ItemDto getItem(Long itemId) {
+        // get the item
+        var item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+
+        // return the item as Dto
         return itemMapper.toDto(item);
     }
 }
