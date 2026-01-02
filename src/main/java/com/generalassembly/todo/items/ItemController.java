@@ -1,6 +1,7 @@
 package com.generalassembly.todo.items;
 
 import com.generalassembly.todo.items.dtos.CreateItemRequest;
+import com.generalassembly.todo.items.dtos.UpdateItemRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -54,11 +55,22 @@ public class ItemController {
         }
     }
 
-    // get items for a category endpoint
-
     // update item endpoint
-    public ResponseEntity<?> updateItem() {
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateItem(
+            @Valid @RequestBody UpdateItemRequest request,
+            @PathVariable String id
+    ) {
+        // try to update the item
+        try {
+            // update the item
+            var itemDto = itemService.updateItem(Long.parseLong(id), request);
+
+            // return the updated entity
+            return ResponseEntity.ok(itemDto);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update the item");
+        }
     }
 
     // delete item endpoint
