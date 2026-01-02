@@ -17,74 +17,55 @@ public class ItemController {
     // create item endpoint
     @PostMapping("/{id}/create")
     public ResponseEntity<?> createItem(
-            @PathVariable(name = "id") String categoryId,
+            @PathVariable(name = "id") Long categoryId,
             @Valid @RequestBody CreateItemRequest request,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        // try to create item
-        try {
-            // create item record
-            var itemDto = itemService.createItem(
-                    Long.parseLong(categoryId),
-                    request
-            );
+        // create item record
+        var itemDto = itemService.createItem(
+                categoryId,
+                request
+        );
 
-            // create the URI to return it in the response body
-            var uri = uriComponentsBuilder.path("/items/{id}").buildAndExpand(itemDto.getId()).toUri();
+        // create the URI to return it in the response body
+        var uri = uriComponentsBuilder.path("/items/{id}").buildAndExpand(itemDto.getId()).toUri();
 
-            // return the response with status 201 and the uri (location of the created entity)
-            return ResponseEntity.created(uri).body(itemDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // return the response with status 201 and the uri (location of the created entity)
+        return ResponseEntity.created(uri).body(itemDto);
     }
 
     // get item endpoint
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(
-            @PathVariable String id) {
-        // try to fetch the item
-        try {
-            // fetch the item
-            var itemDto = itemService.getItem(Long.parseLong(id));
+            @PathVariable Long id) {
+        // fetch the item
+        var itemDto = itemService.getItem(id);
 
-            // return it in the body
-            return ResponseEntity.ok(itemDto);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch the item details");
-        }
+        // return it in the body
+        return ResponseEntity.ok(itemDto);
     }
 
     // update item endpoint
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItem(
             @Valid @RequestBody UpdateItemRequest request,
-            @PathVariable String id
+            @PathVariable Long id
     ) {
-        // try to update the item
-        try {
-            // update the item
-            var itemDto = itemService.updateItem(Long.parseLong(id), request);
+        // update the item
+        var itemDto = itemService.updateItem(id, request);
 
-            // return the updated entity
-            return ResponseEntity.ok(itemDto);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update the item");
-        }
+        // return the updated entity
+        return ResponseEntity.ok(itemDto);
     }
 
     // delete item endpoint
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable String id) {
-        // try to delete item
-        try {
-            // delete the item
-            var itemDto = itemService.deleteItem(Long.parseLong(id));
+    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
 
-            // return the deleted item as the response body
-            return ResponseEntity.ok(itemDto);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete the item");
-        }
+        // delete the item
+        var itemDto = itemService.deleteItem(id);
+
+        // return the deleted item as the response body
+        return ResponseEntity.ok(itemDto);
     }
 }
