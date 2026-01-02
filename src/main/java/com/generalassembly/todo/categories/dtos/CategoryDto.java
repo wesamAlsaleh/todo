@@ -1,6 +1,6 @@
 package com.generalassembly.todo.categories.dtos;
 
-import com.generalassembly.todo.items.Item;
+import com.generalassembly.todo.items.dtos.ItemDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,5 +16,5 @@ public class CategoryDto {
     private String categoryDescription;
     private Instant createdAt;
     private Instant updatedAt;
-    private List<Item> items;
+    private List<ItemDto> items; // each category has a list of items
 }
