@@ -34,7 +34,7 @@ public class ItemController {
         return ResponseEntity.created(uri).body(itemDto);
     }
 
-    // get item endpoint
+    // get a single item endpoint
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(
             @PathVariable Long id) {

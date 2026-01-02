@@ -53,6 +53,18 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDto);
     }
 
+    // get category items
+    @GetMapping("/{id}/items")
+    public ResponseEntity<?> getCategoryItems(
+            @PathVariable Long id
+    ) {
+        // get the category items
+        var categoryItemDtos = categoryService.getCategoryItems(id);
+
+        // return the category items as the body
+        return ResponseEntity.ok(categoryItemDtos);
+    }
+
     // update category by id endpoint
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCategory(

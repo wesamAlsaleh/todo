@@ -1,10 +1,9 @@
 package com.generalassembly.todo.categories;
 
-import com.generalassembly.todo.categories.dtos.CategoriesDto;
-import com.generalassembly.todo.categories.dtos.CategoryDto;
-import com.generalassembly.todo.categories.dtos.CreateCategoryRequest;
-import com.generalassembly.todo.categories.dtos.UpdateCategoryRequest;
+import com.generalassembly.todo.categories.dtos.*;
 import com.generalassembly.todo.global.exceptions.ResourceNotFoundException;
+import com.generalassembly.todo.items.ItemMapper;
+import com.generalassembly.todo.items.dtos.ItemDto;
 import com.generalassembly.todo.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ public class CategoryService {
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final ItemMapper itemMapper;
 
     // function to create category
     public CategoryDto createCategory(CreateCategoryRequest request) {
@@ -72,6 +72,22 @@ public class CategoryService {
 
         // return the category as Dto
         return categoryMapper.toDto(category);
+    }
+
+    // function to get the items of a category
+    public CategoryItemsDto getCategoryItems(Long categoryId) {
+        // get the category
+        var category = fetchCategory(categoryId);
+
+        // category items array
+        var items = new ArrayList<ItemDto>();
+
+        // convert each item into itemDto and add it to the array
+        category.getItems()
+                .forEach(i -> items.add(itemMapper.toDto(i)));
+
+        // return the list of items as Dto
+        return new CategoryItemsDto(items);
     }
 
     // function to update a category by id

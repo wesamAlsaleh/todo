@@ -1,8 +1,12 @@
 package com.generalassembly.todo.categories;
 
 import com.generalassembly.todo.categories.dtos.CategoryDto;
+import com.generalassembly.todo.categories.dtos.CategoryItemsDto;
+import com.generalassembly.todo.items.dtos.ItemDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
