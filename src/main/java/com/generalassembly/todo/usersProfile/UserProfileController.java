@@ -21,19 +21,14 @@ public class UserProfileController {
             @Valid @RequestBody CreateUserProfileRequest request,
             UriComponentsBuilder uriBuilder
     ) {
-        // try to create user profile
-        try {
-            // create the user profile
-            var userProfileDto = userProfileService.createUserProfile(request);
+        // create the user profile
+        var userProfileDto = userProfileService.createUserProfile(request);
 
-            // create the URI (Best practice) to return it in the response body
-            var uri = uriBuilder.path("/users/{id}").buildAndExpand(userProfileDto.getUserId()).toUri();
+        // create the URI (Best practice) to return it in the response body
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userProfileDto.getUserId()).toUri();
 
-            // return the response with status 201 and the uri (location of the created entity)
-            return ResponseEntity.created(uri).body(userProfileDto);
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to create user profile");
-        }
+        // return the response with status 201 and the uri (location of the created entity)
+        return ResponseEntity.created(uri).body(userProfileDto);
     }
 
     // update user profile endpoint
@@ -41,15 +36,10 @@ public class UserProfileController {
     public ResponseEntity<?> updateUserProfile(
             @Valid @RequestBody UpdateUserProfileRequest request
     ) {
-        // try to update user profile
-        try {
-            // update the user profile
-            var userProfileDto = userProfileService.updateUserProfile(request);
+        // update the user profile
+        var userProfileDto = userProfileService.updateUserProfile(request);
 
-            // return the response with status 201 and the uri (location of the created entity)
-            return ResponseEntity.ok(userProfileDto);
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to update user profile");
-        }
+        // return the response with status 201 and the uri (location of the created entity)
+        return ResponseEntity.ok(userProfileDto);
     }
 }
