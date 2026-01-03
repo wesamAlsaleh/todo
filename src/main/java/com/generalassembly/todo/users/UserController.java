@@ -15,14 +15,9 @@ public class UserController {
     // get the full details of the authenticated user endpoint
     @GetMapping
     public ResponseEntity<?> getUserDetails() {
-        // try to fetch user details
-        try {
-            // fetch the user details
-            var userDetails = userService.getUserDetails();
+        // fetch the user details
+        var userDetails = userService.getUserDetails();
 
-            return ResponseEntity.ok().body(userDetails);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok().body(userDetails);
     }
 }
